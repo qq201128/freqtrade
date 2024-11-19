@@ -75,16 +75,24 @@ class Binance(Exchange):
                 assets_margin = self._api.fapiPrivateGetMultiAssetsMargin()
                 self._log_exchange_response("multi_asset_margin", assets_margin)
                 msg = ""
-                if position_side.get("dualSidePosition") is True:
-                    msg += (
-                        "\nHedge Mode is not supported by freqtrade. "
-                        "Please change 'Position Mode' on your binance futures account."
-                    )
-                if assets_margin.get("multiAssetsMargin") is True:
-                    msg += (
-                        "\nMulti-Asset Mode is not supported by freqtrade. "
-                        "Please change 'Asset Mode' on your binance futures account."
-                    )
+                #修改
+                #获取当前持仓模式
+                dualSidePosition = position_side.get('dualSidePosition')
+                #如果当前持仓模式和账号的不一致
+                if self._config['dual_side'] != dualSidePosition:
+                    msg += (f"\n当前持仓模式和账号模式不匹配{dualSidePosition}")
+                # if position_side.get("dualSidePosition") is True:
+                #     msg += (
+                #         "\nHedge Mode is not supported by freqtrade. "
+                #         "Please change 'Position Mode' on your binance futures account."
+                #     )
+                # if assets_margin.get("multiAssetsMargin") is True:
+                #     msg += (
+                #         "\nMulti-Asset Mode is not supported by freqtrade. "
+                #         "Please change 'Asset Mode' on your binance futures account."
+                #     )
+                if self._config['assets_margin'] != assets_margin.get('multiAssetsMargin'):
+                    msg += ("\n当前联合保证金模式和账号不匹配")
                 if msg:
                     raise OperationalException(msg)
         except ccxt.DDoSProtection as e:

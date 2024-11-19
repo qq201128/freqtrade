@@ -1214,9 +1214,11 @@ class Exchange:
     # Order handling
 
     def _lev_prep(self, pair: str, leverage: float, side: BuySell, accept_fail: bool = False):
+        #修改注释
         if self.trading_mode != TradingMode.SPOT:
-            self.set_margin_mode(pair, self.margin_mode, accept_fail)
-            self._set_leverage(leverage, pair, accept_fail)
+            # self.set_margin_mode(pair, self.margin_mode, accept_fail)
+            # self._set_leverage(leverage, pair, accept_fail)
+            pass
 
     def _get_params(
         self,
@@ -1225,12 +1227,19 @@ class Exchange:
         leverage: float,
         reduceOnly: bool,
         time_in_force: str = "GTC",
+        positionSide : str = "BOTH", #新增
     ) -> dict:
         params = self._params.copy()
         if time_in_force != "GTC" and ordertype != "market":
             params.update({"timeInForce": time_in_force.upper()})
         if reduceOnly:
             params.update({"reduceOnly": True})
+        #修改新增 支持双向持仓
+        if positionSide != "" :
+            params.update({"positionSide": positionSide.upper()})
+        #如果是双向持仓 删除reduceOnly
+        if self._config['dual_side']:
+            params.pop("reduceOnly",None)
         return params
 
     def _order_needs_price(self, side: BuySell, ordertype: str) -> bool:
@@ -1251,6 +1260,7 @@ class Exchange:
         leverage: float,
         reduceOnly: bool = False,
         time_in_force: str = "GTC",
+        positionSide: str = "BOTH", #新增
     ) -> CcxtOrder:
         if self._config["dry_run"]:
             dry_order = self.create_dry_run_order(
@@ -1258,7 +1268,10 @@ class Exchange:
             )
             return dry_order
 
-        params = self._get_params(side, ordertype, leverage, reduceOnly, time_in_force)
+        #修改 新增positionSide
+
+        # params = self._get_params(side, ordertype, leverage, reduceOnly, time_in_force)
+        params = self._get_params(side, ordertype, leverage, reduceOnly, time_in_force,positionSide)
 
         try:
             # Set the precision for amount and price(rate) as accepted by the exchange

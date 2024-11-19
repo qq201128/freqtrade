@@ -122,7 +122,8 @@ class Wallets:
                 collateral = position.stake_amount
                 leverage = position.leverage
                 tot_in_trades += collateral
-                _positions[position.pair] = PositionWallet(
+                #修改支持双向持仓
+                _positions[position.pair+"_"+position.trade_direction] = PositionWallet(
                     position.pair,
                     position=size,
                     leverage=leverage,
@@ -168,7 +169,8 @@ class Wallets:
             size = self._exchange._contracts_to_amount(symbol, position["contracts"])
             collateral = safe_value_fallback(position, "collateral", "initialMargin", 0.0)
             leverage = position.get("leverage")
-            _parsed_positions[symbol] = PositionWallet(
+            #修改 支持双向持仓
+            _parsed_positions[symbol+ "_" +position['side']] = PositionWallet(
                 symbol,
                 position=size,
                 leverage=leverage,
@@ -210,8 +212,13 @@ class Wallets:
             # Slightly higher offset than in safe_exit_amount.
             wallet_amount: float = self.get_total(trade.safe_base_currency) * (2 - 0.981)
         else:
+            #修改 支持双向尺长
+            side = "long"
+            if trade.is_short:
+                side = "short"
             # wallet_amount: float = self.wallets.get_free(trade.safe_base_currency)
-            position = self._positions.get(trade.pair)
+            # position = self._positions.get(trade.pair)
+            position = self._positions.get(trade.pair+"_"+side)
             if position is None:
                 # We don't own anything :O
                 return False
