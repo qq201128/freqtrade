@@ -1,0 +1,144 @@
+{
+  "max_open_trades": 8,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "CNY",
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+  "use_exit_signal": true,
+  "exit_profit_only": false,
+  "cancel_open_orders_on_exit": false,
+  "ignore_roi_if_entry_signal": false,
+  "amend_last_stake_amount": true,
+
+  "assets_margin": true,
+  "dual_side": true,
+  "trading_mode": "futures",
+  "margin_mode": "isolated",
+
+  "unfilledtimeout": {
+    "entry": 10,
+    "exit": 10,
+    "exit_timeout_count": 0,
+    "unit": "minutes"
+  },
+  "entry_pricing": {
+    "price_side": "other",
+    "use_order_book": true,
+    "order_book_top": 1,
+    "price_last_balance": 0.0,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "exit_pricing": {
+    "price_side": "other",
+    "use_order_book": true,
+    "order_book_top": 1
+  },
+  "order_types": {
+    "entry": "market",
+    "exit": "market",
+    "emergency_exit": "market",
+    "force_entry": "market",
+    "force_exit": "market",
+    "stoploss": "market",
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60,
+    "stoploss_on_exchange_market_ratio": 0.99
+  },
+  "exchange": {
+    "name": "binance",
+    "key": "",
+    "secret": "",
+    "ccxt_config": {
+      "enableRateLimit": true
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 50
+    },
+    "pair_whitelist": [
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT",
+      "SOL/USDT:USDT",
+      "DOGE/USDT:USDT",
+      "1000PEPE/USDT:USDT"
+    ],
+    "pair_blacklist": [
+      // Exchange
+      "(BNB)/.*",
+      // Leverage
+      ".*(_PREMIUM|BEAR|BULL|HALF|HEDGE|UP|DOWN|[1235][SL])/.*",
+      // Fiat
+      "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
+      // Stable
+      "(BUSD|CUSD|CUSDT|DAI|PAXG|SUSD|TUSD|USDC|USDN|USDP|USDT|VAI|UST|USTC|AUSD)/.*",
+      // Others
+      "(ETH|LTC|XRP|XMR|DOGE)/.*"
+    ]
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    },
+    {
+      "method": "ShuffleFilter",
+      "seed": 42
+    }
+  ],
+  "edge": {
+    "enabled": false,
+    "process_throttle_secs": 3600,
+    "calculate_since_number_of_days": 14,
+    "allowed_risk": 0.01,
+    "stoploss_range_min": -0.01,
+    "stoploss_range_max": -0.1,
+    "stoploss_range_step": -0.01,
+    "minimum_winrate": 0.60,
+    "minimum_expectancy": 0.20,
+    "min_trade_number": 10,
+    "max_trade_duration_minute": 1440,
+    "remove_pumps": false
+  },
+  "telegram": {
+    "enabled": false,
+    "token": "",
+    "chat_id": "",
+    "keyboard": [
+      [
+        "/daily",
+        "/stats",
+        "/balance",
+        "/profit"
+      ],
+      [
+        "/status table",
+        "/performance",
+        "/whitelist"
+      ],
+      [
+        "/reload_config",
+        "/count",
+        "/logs"
+      ]
+    ]
+  },
+  "api_server": {
+    "enabled": false,
+    "listen_ip_address": "0.0.0.0",
+    "listen_port": 8080,
+    "verbosity": "error",
+    "jwt_secret_key": "aaaaaa",
+    "username": "",
+    "password": ""
+  },
+  "bot_name": "freqtrade",
+  "initial_state": "running",
+  "force_entry_enable": false,
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}

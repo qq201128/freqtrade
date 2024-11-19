@@ -1,0 +1,9 @@
+freqtrade trade -c ./user_data/config_binance_live_future.json --strategy CciAndMacdStrategy --dry-run
+freqtrade trade -c ./user_data/config_binance_live_future_1.json -s BollingerBandsEnhancedStrategy --dry-run --db-url sqlite:///tradesbolling.dryrun.sqlite 
+# 终端 1:
+freqtrade trade -c ./user_data/config_binance_live_future_testReal.json -s DiyBuyStrategy --db-url sqlite:///user_data/DiyBuyStrategyReal.dryrun.sqlite 
+freqtrade trade -c ./user_data/config_binance_live_future_testRealSell.json -s DiySellStrategy --db-url sqlite:///user_data/DiySellStrategyReal.dryrun.sqlite 
+# 终端 2:
+freqtrade trade -c ./user_data/config_binance_live_future_testSell.json -s DiySellPEPEStrategy --db-url sqlite:///user_data/DiySellPEPEStrategy.dryrun.sqlite --dry-run
+# 终端 3:
+freqtrade trade -c ./user_data/config_binance_live_future_test.json -s TwoWayStrategy --db-url sqlite:///user_data/TwoWayStrategy.dryrun.sqlite --dry-run

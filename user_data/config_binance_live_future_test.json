@@ -1,0 +1,170 @@
+{
+    "max_open_trades": 5,
+    "stake_currency": "USDT",
+    "stake_amount": 0.3,
+    "tradable_balance_ratio": 0.99,
+    "fiat_display_currency": "CNY",
+    "dry_run": false,
+    "dry_run_wallet": 5000,
+    "use_exit_signal": true,
+    "exit_profit_only": false,
+    "cancel_open_orders_on_exit": false,
+    "ignore_roi_if_entry_signal": true,
+    "amend_last_stake_amount": true,
+    "assets_margin": false,
+    "dual_side": true,
+    "trading_mode": "futures",
+    "margin_mode": "isolated",
+    "unfilledtimeout": {
+        "entry": 10,
+        "exit": 10,
+        "exit_timeout_count": 0,
+        "unit": "minutes"
+    },
+    "entry_pricing": {
+        "price_side": "other",
+        "use_order_book": true,
+        "order_book_top": 1,
+        "price_last_balance": 0.0,
+        "check_depth_of_market": {
+            "enabled": false,
+            "bids_to_ask_delta": 1
+        }
+    },
+    "exit_pricing": {
+        "price_side": "other",
+        "use_order_book": true,
+        "order_book_top": 1
+    },
+    "order_types": {
+        "entry": "market",
+        "exit": "market",
+        "emergency_exit": "market",
+        "force_entry": "market",
+        "force_exit": "market",
+        "stoploss": "market",
+        "stoploss_on_exchange": false,
+        "stoploss_on_exchange_interval": 60,
+        "stoploss_on_exchange_market_ratio": 0.99
+    },
+    "exchange": {
+        "name": "binance",
+        "key": "qjjegLsLP7gT1uiorZunuSAMh6Gr5GEsuN9PaXLdgT6hue0BOfeVpbb3juXXhQHv",
+        "secret": "kWpOuIHbYjuNZteaxJpiutcK9cnY83oP5RZ0ByxLR7oE3TzNtmvjCi9Dncna1bSa",
+        "ccxt_config": {
+            "enableRateLimit": true,
+            "httpsProxy": "http://127.0.0.1:10809"
+        },
+        "ccxt_async_config": {
+            "enableRateLimit": true,
+            "rateLimit": 300
+        },
+        "pair_whitelist": [
+            "DOGE/USDT:USDT"
+        ],
+        "pair_blacklist": [
+            "(BNB)/.*",
+            ".*(_PREMIUM|BEAR|BULL|HALF|HEDGE|UP|DOWN|[1235][SL])/.*",
+            "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
+            "(BUSD|CUSD|CUSDT|DAI|PAXG|SUSD|TUSD|USDC|USDN|USDP|USDT|VAI|UST|USTC|AUSD)/.*",
+            "(YFI|XMR)/.*",
+            "(ACM|AFA|ALA|ALL|ALPINE|APL|ASR|ATM|BAR|CAI|CHZ|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
+            "(1EARTH|ILA|BOBA|CTXC|CWAR|HBAR|NMR|OMG|ONG|ARDR|DMTR|MLS|TORN|LUNA|BTS|QKC|COS|ACA|FTT|SRM|YFII|SNM|BNX|ANC|AION|MIR|BNX|STG|HNT|WABI|QLC|NEBL|AUTO|VGX|PEPE|VITE|DREP|JASMY|PNT|PERL|AMB|OAX|LOOM|BTS|RAD|ID)/.*"
+        ]
+    },
+    "pairlists": [
+        // {
+        //     "method": "VolumePairList",
+        //     "number_assets": 20,
+        //     "sort_key": "quoteVolume",
+        //     "min_value": 0,
+        //     "refresh_period": 3600,
+        //     "lookback_timeframe": "1h",
+        //     "lookback_period": 72
+        // },
+        {
+            "method": "StaticPairList"
+        },
+        {
+            "method": "ShuffleFilter",
+            "shuffle_frequency": "candle"
+        }
+    ],
+    "edge": {
+        "enabled": false,
+        "process_throttle_secs": 3600,
+        "calculate_since_number_of_days": 14,
+        "allowed_risk": 0.01,
+        "stoploss_range_min": -0.01,
+        "stoploss_range_max": -0.1,
+        "stoploss_range_step": -0.01,
+        "minimum_winrate": 0.6,
+        "minimum_expectancy": 0.2,
+        "min_trade_number": 10,
+        "max_trade_duration_minute": 1440,
+        "remove_pumps": false
+    },
+    "telegram": {
+        "enabled": false,
+        "token": "7476961264:AAG_D5aKGxzAcm_mVL9GITtlr4q5p9f6J5k",
+        "chat_id": "2127856168",
+        "allow_custom_messages": true,
+        "notification_settings": {
+            "status": "silent",
+            "warning": "on",
+            "startup": "off",
+            "entry": "silent",
+            "entry_fill": "on",
+            "entry_cancel": "silent",
+            "exit": {
+                "roi": "silent",
+                "emergency_exit": "on",
+                "force_exit": "on",
+                "exit_signal": "silent",
+                "trailing_stop_loss": "on",
+                "stop_loss": "on",
+                "stoploss_on_exchange": "on",
+                "custom_exit": "silent",
+                "partial_exit": "on"
+            },
+            "method": "AgeFilter",
+            "min_days_listed": 30
+        },
+        "keyboard": [
+            [
+                "/daily",
+                "/stats",
+                "/balance",
+                "/profit"
+            ],
+            [
+                "/status table",
+                "/performance",
+                "/whitelist"
+            ],
+            [
+                "/reload_config",
+                "/count",
+                "/logs"
+            ]
+        ]
+    },
+    "api_server": {
+        "enabled": true,
+        "listen_ip_address": "0.0.0.0",
+        "listen_port": 8081,
+        "verbosity": "error",
+        "jwt_secret_key": "xxxxxxxxxxjjjj",
+        "CORS_origins": [
+            "http://ip:port"
+        ],
+        "username": "admin",
+        "password": "admin"
+    },
+    "bot_name": "test_buy",
+    "initial_state": "running",
+    "force_entry_enable": false,
+    "internals": {
+        "process_throttle_secs": 5
+    }
+}

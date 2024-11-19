@@ -1,0 +1,1 @@
+freqtrade test-pairlist -c ./user_data/config_okx_live_future.json --quote USDT --print-json

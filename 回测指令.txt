@@ -1,0 +1,1 @@
+freqtrade  backtesting -c ./user_data/config_binance_live_future_1.json --strategy Demo1030   --breakdown day week month --enable-protections --cache none  --timeframe-detail 1m --timerange 20241001-20241015  --export trades --export-filename=./user_data/backtest_results/backtest_today.json
