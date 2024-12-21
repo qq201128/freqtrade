@@ -1368,7 +1368,7 @@ class IStrategy(ABC, HyperStrategyMixin):
         # ROI
         # Trailing stoploss
 
-        if stoplossflag.exit_type in (ExitType.STOP_LOSS, ExitType.LIQUIDATION):
+        if stoplossflag.exit_type == ExitType.STOP_LOSS:
             logger.debug(f"{trade.pair} - Stoploss hit. exit_type={stoplossflag.exit_type}")
             exits.append(stoplossflag)
 
@@ -1511,9 +1511,9 @@ class IStrategy(ABC, HyperStrategyMixin):
 
             return ExitCheckTuple(exit_type=exit_type)
 
-        if liq_higher_long or liq_lower_short:
-            logger.debug(f"{trade.pair} - Liquidation price hit. exit_type=ExitType.LIQUIDATION")
-            return ExitCheckTuple(exit_type=ExitType.LIQUIDATION)
+        # if liq_higher_long or liq_lower_short:
+        #     logger.debug(f"{trade.pair} - Liquidation price hit. exit_type=ExitType.LIQUIDATION")
+        #     return ExitCheckTuple(exit_type=ExitType.LIQUIDATION)
 
         return ExitCheckTuple(exit_type=ExitType.NONE)
 

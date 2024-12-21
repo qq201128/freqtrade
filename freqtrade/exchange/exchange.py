@@ -1217,8 +1217,8 @@ class Exchange:
         #修改注释
         if self.trading_mode != TradingMode.SPOT:
             # self.set_margin_mode(pair, self.margin_mode, accept_fail)
-            # self._set_leverage(leverage, pair, accept_fail)
-            pass
+            self._set_leverage(leverage, pair, accept_fail)
+
 
     def _get_params(
         self,

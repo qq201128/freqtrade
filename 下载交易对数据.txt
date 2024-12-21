@@ -1,1 +1,1 @@
-freqtrade download-data -c ./user_data/config_binance_live_future_1.json --day 90 --timeframes 1m 3m 5m 30m 1h 15m 4h 6h 1d
+freqtrade download-data -c ./user_data/config_binance_live_future_test.json --prepend --timeframes 1m 15m 1h 4h 8h 1d

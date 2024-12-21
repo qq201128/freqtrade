@@ -475,7 +475,7 @@ class Backtesting:
         if exit_.exit_type in (
             ExitType.STOP_LOSS,
             ExitType.TRAILING_STOP_LOSS,
-            ExitType.LIQUIDATION,
+            # ExitType.LIQUIDATION,
         ):
             return self._get_close_rate_for_stoploss(row, trade, exit_, trade_dur)
         elif exit_.exit_type == (ExitType.ROI):
@@ -492,7 +492,7 @@ class Backtesting:
         is_short = trade.is_short or False
         leverage = trade.leverage or 1.0
         side_1 = -1 if is_short else 1
-        if exit_.exit_type == ExitType.LIQUIDATION and trade.liquidation_price:
+        if  trade.liquidation_price:
             stoploss_value = trade.liquidation_price
         else:
             stoploss_value = trade.stop_loss
@@ -796,7 +796,7 @@ class Backtesting:
             time_in_force = self.strategy.order_time_in_force["exit"]
 
             if exit_.exit_type not in (
-                ExitType.LIQUIDATION,
+                # ExitType.LIQUIDATION,
                 ExitType.PARTIAL_EXIT,
             ) and not strategy_safe_wrapper(self.strategy.confirm_trade_exit, default_retval=True)(
                 pair=trade.pair,

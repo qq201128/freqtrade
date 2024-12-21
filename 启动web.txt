@@ -1,1 +1,1 @@
-freqtrade  webserver -c ./user_data/config_binance_live_future_2.json
+freqtrade  webserver -c ./user_data/config_binance_live_future_test.json

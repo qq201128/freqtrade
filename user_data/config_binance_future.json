@@ -54,7 +54,8 @@
     "key": "",
     "secret": "",
     "ccxt_config": {
-      "enableRateLimit": true
+      "enableRateLimit": true,
+       "httpsProxy": "http://127.0.0.1:10809"
     },
     "ccxt_async_config": {
       "enableRateLimit": true,

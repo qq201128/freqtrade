@@ -29,7 +29,7 @@ class DiyMaDing(IStrategy):
     stoploss = -999
     INTERFACE_VERSION = 3
     position_adjustment_enable = True
-    timeframe = "5m"
+    timeframe = "15m"
     can_short = True
     startup_candle_count: int = 200
 
@@ -41,10 +41,14 @@ class DiyMaDing(IStrategy):
         informative_pairs = [(pair, '1d') for pair in pairs]
         # 可选的附加“静态”交易对
         informative_pairs += [
-                              ("BTC/USDT", "5m"),
+                              ("BTC/USDT:USDT", "15m"),
                             ]
         return informative_pairs
 
+    @informative('1d')
+    def populate_indicators_1d(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe["rsi"] = ta.RSI(dataframe) 
+        return dataframe
 
     @informative('1h')
     def populate_indicators_1h(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -59,7 +63,8 @@ class DiyMaDing(IStrategy):
 
         # 添加死叉信号列
         dataframe["death_cross"] =  (dataframe["macd"] < dataframe["macdsignal"]) 
-
+        dataframe["ema_12"] = ta.EMA(dataframe,timeperiod=12)
+        dataframe["ema_200"] = ta.EMA(dataframe,timeperiod=100)
         return dataframe
 
 
@@ -70,15 +75,16 @@ class DiyMaDing(IStrategy):
 
         dataframe['golden_cross_1h'] = dataframe['golden_cross_1h']
         dataframe['death_cross_1h'] = dataframe['death_cross_1h']
-                
+        dataframe["ema_12_1h"] = dataframe["ema_12_1h"]
+        dataframe["ema_100_1h"] = dataframe["ema_100_1h"]
         macd = ta.MACD(dataframe)
         dataframe["macd"] = macd["macd"]
         dataframe["macdsignal"] = macd["macdsignal"]
         dataframe["macdhist"] = macd["macdhist"]
 
         dataframe["ema_5m_12"] = ta.EMA(dataframe,timeperiod=12)
-        dataframe["ema_5m_200"] = ta.EMA(dataframe,timeperiod=200)
-
+        dataframe["ema_5m_100"] = ta.EMA(dataframe,timeperiod=100)
+        dataframe["rsi"] = ta.RSI(dataframe,timeperiod = 12)
        
         # 添加金叉信号列
         dataframe["golden_cross"] = (dataframe["macd"] > dataframe["macdsignal"]) & (dataframe["macd"].shift(1) <= dataframe["macdsignal"].shift(1))
@@ -91,7 +97,7 @@ class DiyMaDing(IStrategy):
     
     def total_price_cal(self,dataframe: DataFrame) -> DataFrame :
         # 获取信息交易对
-        btc = self.dp.get_pair_dataframe(pair="BTC/USDT", timeframe="5m")
+        btc = self.dp.get_pair_dataframe(pair="BTC/USDT:USDT", timeframe="15m")
         btc_candle = btc.iloc[-1:]
         # 初始化总和
         total_sum = 0
@@ -104,7 +110,7 @@ class DiyMaDing(IStrategy):
             # 将计算结果加到总和中
             total_sum += change_percentage
             
-        dataframe["total_price"] = total_sum[-1]
+        dataframe["total_price"] = total_sum
         # print(total_sum)
         return dataframe
 
@@ -112,20 +118,23 @@ class DiyMaDing(IStrategy):
         self.total_price_cal(dataframe)
         dataframe.loc[
             (
-                (dataframe["death_cross"])
+                (dataframe["golden_cross"])
+                
                 &
-                (dataframe["ema_5m_12"] > dataframe["ema_5m_200"])
+                (dataframe["ema_12_1h"] > dataframe["ema_100_1h"])
                 &
                 (dataframe['total_price']>0)
                 &
                 (dataframe['volume'] > 0)
             ),
             ['enter_long', 'long_tag']] = (1, 'enter_long_1') 
+        
         dataframe.loc[
             (
-                (dataframe["golden_cross"])
+                (dataframe["death_cross"])
+               
                 &
-                (dataframe["ema_5m_12"] < dataframe["ema_5m_200"])
+                (dataframe["ema_12_1h"] < dataframe["ema_100_1h"])
                 &
                 (dataframe['total_price']< 0 )
                 &
@@ -163,9 +172,11 @@ class DiyMaDing(IStrategy):
         
         if current_profit > 0.05:
                 return "赚到钱了，跑"
-        if trade.nr_of_successful_entries > 3:
-            if current_profit < -0.5:
-                return "不该我赚，跑"
+        
+       
+        if trade.leverage< 50 :
+             if current_profit>=0.005:
+                  return "赚到钱了，跑"
 
     def adjust_trade_position(self, trade: Trade, current_time: datetime,
                               current_rate: float, current_profit: float,
@@ -177,31 +188,38 @@ class DiyMaDing(IStrategy):
                               current_entry_profit: float, current_exit_profit: float,
 
                               **kwargs) -> Optional[float]:
-                              
-        dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
 
 
-        if trade.leverage< 50 :
-             if current_profit>=0.005:
-                  return -(trade.stake_amount )
-
-        if trade.nr_of_successful_entries <= 3:
-            if current_profit <= -0.3:
-                    if trade.is_short :
-                       
-                        if last_candle["death_cross_1h"]:
-                                return 10
-                        else:
-                                return 5
-                    else:
-                        
-                        if last_candle["golden_cross_1h"]:
-                                return 10
-                        else:
-                                return 5
-       
+        if trade.nr_of_successful_entries <=2 :
+            if current_profit <=-1:
+                return trade.nr_of_successful_entries
+        if 2 < trade.nr_of_successful_entries <= 3:
+            if current_profit <=-1:
+                return trade.nr_of_successful_entries + 2
+        if 3 < trade.nr_of_successful_entries <= 4:
+            if current_profit <=-1:
+                return trade.nr_of_successful_entries + 2
+        if 4 < trade.nr_of_successful_entries <= 5:
+            if current_profit <=-1:
+                return trade.nr_of_successful_entries + 2
+        if 5 < trade.nr_of_successful_entries <= 6:
+            if current_profit <=-3:
+                return (trade.nr_of_successful_entries + 2) * 1.5
+        if 6 < trade.nr_of_successful_entries <= 7:
+            if current_profit <=-3:
+                return (trade.nr_of_successful_entries + 2)* 1.5
+        if 7 < trade.nr_of_successful_entries <= 8:
+            if current_profit <=-5:
+                return (trade.nr_of_successful_entries + 2)* 2
+        if 8 < trade.nr_of_successful_entries <= 9:
+            if current_profit <=-5:
+                return (trade.nr_of_successful_entries + 2)* 2
+        if 9 < trade.nr_of_successful_entries <= 10:
+            if current_profit <=-5:
+                return (trade.nr_of_successful_entries + 2)* 2
         
+
+
 
         return None
 

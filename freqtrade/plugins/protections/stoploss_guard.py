@@ -59,7 +59,7 @@ class StoplossGuard(IProtection):
                     ExitType.TRAILING_STOP_LOSS.value,
                     ExitType.STOP_LOSS.value,
                     ExitType.STOPLOSS_ON_EXCHANGE.value,
-                    ExitType.LIQUIDATION.value,
+                    # ExitType.LIQUIDATION.value,
                 )
                 and trade.close_profit
                 and trade.close_profit < self._profit_limit

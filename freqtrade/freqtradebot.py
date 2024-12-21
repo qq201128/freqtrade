@@ -1995,7 +1995,7 @@ class FreqtradeBot(LoggingMixin):
         if exit_check.exit_type in (
             ExitType.STOP_LOSS,
             ExitType.TRAILING_STOP_LOSS,
-            ExitType.LIQUIDATION,
+            # ExitType.LIQUIDATION,
         ):
             exit_type = "stoploss"
 
@@ -2027,8 +2027,8 @@ class FreqtradeBot(LoggingMixin):
         time_in_force = self.strategy.order_time_in_force["exit"]
 
         if (
-            exit_check.exit_type != ExitType.LIQUIDATION
-            and not sub_trade_amt
+
+            not sub_trade_amt
             and not strategy_safe_wrapper(self.strategy.confirm_trade_exit, default_retval=True)(
                 pair=trade.pair,
                 trade=trade,
